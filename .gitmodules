@@ -1,0 +1,3 @@
+[submodule "src/config"]
+	path = src/config
+	url = git@bitbucket.org:ecosnail/config.git
