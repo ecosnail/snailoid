@@ -2,46 +2,45 @@
 
 #include "game_objects.hpp"
 
+#include <array>
 #include <vector>
-#include <utility>
-#include <cstddef>
-#include <cstdlib>
-#include <ctime>
 
 struct Level {
-	Level(std::vector<BlockContent> content, std::vector<size_t> map)
-		: map(std::move(map))
-	{
-		srand(static_cast<unsigned>(time(nullptr)));
-		for (BlockContent &cont : content) {
-			blocks.push_back(Block{ Color(rand() % (int)Color::MAX), cont });
-		}
-	}
+public:
+    static constexpr size_t width = 16;
+    static constexpr size_t height = 12;
+    static constexpr size_t cellCount = width * height;
 
-	std::vector<Block> blocks;
-	std::vector<size_t> map;
+    Level(
+        const std::vector<Cell>& cellTypes,
+        const std::array<size_t, cellCount>& field)
+    {
+        for (size_t i = 0; i < cellCount; i++) {
+            _cells[i] = cellTypes[field[i]];
+        }
+    }
+
+private:
+    std::array<Cell, width * height> _cells;
 };
 
 Level level0 = {
-	// blocks
-	{
-		BlockContent::EMPTY,	// 0
-		BlockContent::FULL	// 1
-	},
-
-	// level
-	{
-		0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-		0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
-		0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	}
+    {
+        Cell::empty(),
+        Block(),
+    },
+    {
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+        0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+        0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+        0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
+        0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
+        0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+        0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    }
 };

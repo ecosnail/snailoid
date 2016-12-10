@@ -1,31 +1,45 @@
 #pragma once
 
-enum class Color : int {
-	BLACK,
-	WHITE,
-	RED,
-	GREEN,
-	BLUE,
-	CYAN,
-	MAGENTA,
-	YELLOW,
-
-	MAX,
-};
-
-enum class BlockContent {
-	EMPTY,
-	FULL,
-};
+#include <utility>
 
 struct Block {
-	Color color;
-	BlockContent content;
-	int x;
-	int y;
+    Block() { }
+};
+
+struct Cell {
+public:
+    Cell() : _hasBlock(false), _block() {}
+
+    Cell(Block block)
+        : _hasBlock(true)
+        , _block(std::move(block))
+    { }
+
+    static Cell empty()
+    {
+        return Cell();
+    }
+
+    bool hasBlock() const { return _hasBlock; }
+
+private:
+    bool _hasBlock;
+    Block _block;
 };
 
 struct Pad {
-	float position;
+    float x;
+    float y;
+    float vx;
+    float vy;
+    float w;
+    float h;
 };
 
+struct Ball {
+    float x;
+    float y;
+    float radius;
+    float vx;
+    float vy;
+};

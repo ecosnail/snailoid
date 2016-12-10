@@ -7,7 +7,10 @@ CC = g++
 CFLAGS = -Wall -Wextra -std=c++14 $(LIBS) $(INCLUDE)
 
 SRC = \
-	main.cpp
+	collisions.cpp \
+	geometry.cpp \
+	main.cpp \
+
 
 BIN = snailoid
 DEP = $(SRC:.cpp=.d)
@@ -28,7 +31,7 @@ all: $(BIN)
 include $(DEP)
 
 $(BIN): $(OBJ)
-	$(CC) $(CFLAGS) -o $(BIN) $(SRC)
+	$(CC) $(CFLAGS) -o $(BIN) $(OBJ)
 
 .PHONY: clean
 clean:
