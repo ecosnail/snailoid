@@ -7,6 +7,7 @@ CC = g++
 CFLAGS = -Wall -Wextra -std=c++14 $(LIBS) $(INCLUDE)
 
 SRC = \
+	2dspace.cpp \
 	collisions.cpp \
 	geometry.cpp \
 	main.cpp \
