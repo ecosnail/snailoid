@@ -2,9 +2,9 @@
 #include "frame_timer.hpp"
 #include "game_state.hpp"
 
-#include <ecosnail/config.hpp>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL2_gfxPrimitives.h>
+#include "configuration.hpp"
+#include "sdl_libs.hpp"
+#include "view.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -12,59 +12,20 @@
 
 namespace cfg = ecosnail::config;
 
-//const std::map<Color, SDL_Color> colorMapping {
-//    { Color::BLACK,   { 0,   0,   0,   255 } },
-//    { Color::BLUE,    { 0,   0,   255, 255 } },
-//    { Color::GREEN,   { 0,   255, 0,   255 } },
-//    { Color::YELLOW,  { 0,   255, 255, 255 } },
-//    { Color::RED,     { 255, 0,   0,   255 } },
-//    { Color::CYAN,    { 255, 0,   255, 255 } },
-//    { Color::MAGENTA, { 255, 255, 0,   255 } },
-//    { Color::WHITE,   { 255, 255, 255, 255 } },
-//};
 
-
-struct Configuration {
-    std::string title;
-    int screen_width;
-    int screen_height;
-    float fps;
-
-    DEFINE_FIELDS(
-        title, screen_width, screen_height, fps)
-};
-
-
-
-int main()
+int main(int argc, char *argv[])
 {
-    Configuration config;
+    Configuration configuration;
 
     std::ifstream configFile("snailoid.cfg");
-    cfg::read(config, configFile);
+    cfg::read(configuration, configFile);
     configFile.close();
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
-        THROW(SdlException);
-    }
+    GameState state;
+
+    View view(configuration.view);
+    view.attach(state);
     
-    SDL_Window *window = SDL_CreateWindow(
-        config.title.c_str(),
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        config.screen_width,
-        config.screen_height,
-        SDL_WINDOW_SHOWN);
-    if (!window) {
-        THROW(SdlException);
-    }
-
-    SDL_Renderer *renderer = SDL_CreateRenderer(
-        window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (!renderer) {
-        THROW(SdlException);
-    }
-
     FrameTimer timer(60.f);
 
     bool done = false;
@@ -81,12 +42,11 @@ int main()
             continue;
         }
 
+        view.render();
 
-        SDL_RenderPresent(renderer);
+        state.update(0.01f);
     }
 
 
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+    return 0;
 }

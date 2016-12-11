@@ -1,3 +1,9 @@
 *.*.swp
+*.VC.db
+*.VC.opendb
 *.d
 *.o
+.vs/
+/bin/
+/build/
+/lib/

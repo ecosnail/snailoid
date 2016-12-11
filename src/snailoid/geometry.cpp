@@ -52,6 +52,11 @@ Circle::Circle(Point center, Scalar radius)
     , _radius(std::move(radius))
 { }
 
+Circle::Circle(Scalar x, Scalar y, Scalar radius)
+    : _center(x, y)
+    , _radius(radius)
+{ }
+
 Scalar pointCoordOnLine(const Point& p, const Line& l)
 {
     Scalar pCoord = coordAlong(p, l.direction());
@@ -72,13 +77,75 @@ bool pointsOnSameSideOfLine(const Line& l, const Point& p1, const Point& p2)
     return cross(lp1 - p1, lp2 - p1) * cross(lp1 - p2, lp2 - p2) > 0;
 }
 
-bool pointBetweenLines(const Point& p, const Line& l1, const Line& l2)
+bool pointInCorridor(const Point& p, const Corridor& c)
 {
-    return pointsOnSameSideOfLine(l1, l2.base(), p) &&
-        pointsOnSameSideOfLine(l2, l1.base(), p);
+    Line l1 = Line::directed(c.base1(), c.direction());
+    Line l2 = Line::directed(c.base2(), c.direction());
+    return pointsOnSameSideOfLine(l1, c.base2(), p) &&
+        pointsOnSameSideOfLine(l2, c.base1(), p);
 }
 
 Point linePointAtCoord(const Line& l, Scalar coord)
 {
     return l.base() + coord * l.direction();
+}
+
+Segment::Segment(Point start, Point end)
+    : _start(std::move(start))
+    , _end(std::move(end))
+{ }
+
+Segment::Segment(Scalar x1, Scalar y1, Scalar x2, Scalar y2)
+    : _start(x1, y1)
+    , _end(x2, y2)
+{ }
+
+Corridor::Corridor(Point base1, Point base2, Vector direction)
+    : _base1(std::move(base1))
+    , _base2(std::move(base2))
+    , _direction(std::move(direction))
+{ }
+
+Corridor::Corridor(const Point &center, Vector direction, Scalar halfWidth)
+    : _direction(std::move(direction))
+    , _base1(Point::zero)
+    , _base2(Point::zero)
+{
+    Vector offsetVector = halfWidth * normalized(ccw90(direction));
+    _base1 = center + offsetVector;
+    _base2 = center - offsetVector;
+}
+
+Line lineOfSegment(const Segment& s)
+{
+    return Line::directed(s.start(), s.end() - s.start());
+}
+
+bool intersect(const Segment& s, const Line& l)
+{
+    Line segmentLine = lineOfSegment(s);
+    Point x = lineCross(segmentLine, l);
+    Scalar xCoord = pointCoordOnLine(x, segmentLine);
+    return xCoord >= 0 && xCoord <= 1;
+}
+
+bool intersect(const Segment& s, const Corridor& corridor)
+{
+    Line l1 = Line::directed(corridor.base1(), corridor.direction());
+    Line l2 = Line::directed(corridor.base2(), corridor.direction());
+    return intersect(s, l1) || intersect(s, l2);
+}
+
+AxisRect::AxisRect(Scalar x, Scalar y, Scalar w, Scalar h)
+    : _x(x), _y(y), _w(w), _h(h)
+{ }
+
+std::vector<Segment> AxisRect::segments() const
+{
+    return {
+        { _x     , _y     , _x + _w, _y      },
+        { _x + _w, _y     , _x + _w, _y + _h },
+        { _x + _w, _y + _h, _x     , _y + _h },
+        { _x     , _y + _h, _x     , _y      },
+    };
 }

@@ -1,31 +1,37 @@
 #pragma once
 
+#include "geometry.hpp"
+
 #include <utility>
 
 struct Block {
-    Block() { }
-};
-
-struct Cell {
-public:
-    Cell() : _hasBlock(false), _block() {}
-
-    Cell(Block block)
-        : _hasBlock(true)
-        , _block(std::move(block))
+    Block(float x, float y, float w, float h)
+        : geometry(x, y, w, h)
     { }
 
-    static Cell empty()
-    {
-        return Cell();
-    }
-
-    bool hasBlock() const { return _hasBlock; }
-
-private:
-    bool _hasBlock;
-    Block _block;
+    AxisRect geometry;
 };
+
+//struct Cell {
+//public:
+//    Cell() : _hasBlock(false), _block() {}
+//
+//    Cell(Block block)
+//        : _hasBlock(true)
+//        , _block(std::move(block))
+//    { }
+//
+//    static Cell empty()
+//    {
+//        return Cell();
+//    }
+//
+//    bool hasBlock() const { return _hasBlock; }
+//
+//private:
+//    bool _hasBlock;
+//    Block _block;
+//};
 
 struct Pad {
     float x;
@@ -37,9 +43,11 @@ struct Pad {
 };
 
 struct Ball {
-    float x;
-    float y;
-    float radius;
-    float vx;
-    float vy;
+    Ball()
+        : geometry(0.5f, 0.1f, 0.05f)
+        , velocity(0.1f, 0.1f)
+    { }
+
+    Circle geometry;
+    Vector velocity;
 };

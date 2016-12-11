@@ -2,6 +2,8 @@
 
 typedef float Scalar;
 
+Scalar clamp(Scalar value, const Scalar& min, const Scalar& max);
+
 /**
  * Vector in 2D game space.
  *
@@ -60,6 +62,16 @@ Scalar cross(const Vector& v1, const Vector& v2);
 
 /** Normalized vector */
 Vector normalized(const Vector& v);
+
+/** Projection of vector v onto line base */
+Vector projection(const Vector& v, const Vector& direction);
+
+/** Ort of vector v projected onto direction */
+Vector ort(const Vector& v, const Vector& direction);
+
+Vector mirrorBy(const Vector& v, const Vector& mirror);
+
+Vector mirrorAlong(const Vector& v, const Vector& direction);
 
 /**
  * Point in 2D game space.

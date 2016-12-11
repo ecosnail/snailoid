@@ -60,3 +60,32 @@ CircleCollision circleCollidesPoint(
 
     return CircleCollision(newCenter, point);
 }
+
+CircleCollision circleCollidesSegment(
+    const Circle& circle,
+    const Vector& direction,
+    const Segment& segment)
+{
+    Corridor movementCorridor(circle.center(), direction, circle.radius());
+    if (!intersect(segment, movementCorridor)) {
+        return CircleCollision::none;
+    }
+
+    Line segmentLine = Line::directed(
+        segment.start(),
+        segment.end() - segment.start());
+
+    CircleCollision lineCollision = circleCollidesLine(
+        circle, direction, segmentLine);
+
+    Scalar collisionCoord =
+        pointCoordOnLine(lineCollision.collisionPoint, segmentLine);
+    if (collisionCoord >= 0 && collisionCoord <= 1) {
+        return lineCollision;
+    }
+
+    Scalar fixedCoord = clamp(collisionCoord, 0, 1);
+    return circleCollidesPoint(
+        circle, direction, linePointAtCoord(segmentLine, fixedCoord));
+}
+

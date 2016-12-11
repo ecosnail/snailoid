@@ -4,34 +4,18 @@
 #include "levels.hpp"
 
 #include <vector>
-#include <cstdlib>
-#include <ctime>
 
 class GameState {
 public:
-
-    void loadLevel(Level level)
+    void addBlock(float x, float y, float w, float h)
     {
-        _level = std::move(level);
-
-        _pad.x = 0.5f;
-        _pad.y = _pad.h / 2.0f;
-
-        _ballIsAttached = true;
+        _blocks.emplace_back(x, y, w, h);
     }
 
-    void update(float deltaSec)
-    {
-        // The ball does not have free movement when attached to the pad.
-        if (_ballIsAttached) {
-            return;
-        }
-    }
+    void update(float deltaSec);
 
-private:
-    Level _level;
-    Pad _pad;
+//private:
     Ball _ball;
-    bool _ballIsAttached;
+    std::vector<Block> _blocks;
 };
 

@@ -1,6 +1,12 @@
 #include "2dspace.hpp"
 
 #include <cmath>
+#include <algorithm>
+
+Scalar clamp(Scalar value, const Scalar& min, const Scalar& max)
+{
+    return std::min(std::max(value, min), max);
+}
 
 /*
  * Vector operations
@@ -80,6 +86,28 @@ Vector cw90(const Vector& v)
 Vector normalized(const Vector& v)
 {
     return v / len(v);
+}
+
+Vector projection(const Vector& v, const Vector& direction)
+{
+    Vector axis = normalized(direction);
+    Scalar coord = dot(v, axis);
+    return axis * coord;
+}
+
+Vector ort(const Vector& v, const Vector& direction)
+{
+    return v - projection(v, direction);
+}
+
+Vector mirrorBy(const Vector& v, const Vector& mirror)
+{
+    return v - 2 * ort(v, mirror);
+}
+
+Vector mirrorAlong(const Vector& v, const Vector& direction)
+{
+    return v - 2 * projection(v, direction);
 }
 
 /*
