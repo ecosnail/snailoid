@@ -1,5 +1,5 @@
 #include "exceptions.hpp"
-#include "frame_timer.hpp"
+#include "timer.hpp"
 #include "game_state.hpp"
 
 #include "configuration.hpp"
@@ -12,7 +12,6 @@
 
 namespace cfg = ecosnail::config;
 
-
 int main(int argc, char *argv[])
 {
     Configuration configuration;
@@ -21,13 +20,17 @@ int main(int argc, char *argv[])
     cfg::read(configuration, configFile);
     configFile.close();
 
-    GameState state;
+    game::State state;
 
     View view(configuration.view);
-    view.attach(state);
-    
-    FrameTimer timer(60.f);
 
+    view.setViewport(Viewport::simple2d(
+        game::AxisRect(0, 0, 1, 1),
+        screen::Rect(0, 0, configuration.view.screen_width, configuration.view.screen_height)));
+
+    view.attach(state);
+
+    FrameTimer timer(configuration.gameplay.fps);
     bool done = false;
     while (!done) {
         SDL_Event evt;
@@ -38,15 +41,11 @@ int main(int argc, char *argv[])
             }
         }
 
-        if (!timer.itIsTime()) {
-            continue;
+        if (timer.itIsTime()) {
+            state.update(timer.timePerFrame());
+            view.render();
         }
-
-        view.render();
-
-        state.update(0.01f);
     }
-
 
     return 0;
 }

@@ -3,6 +3,8 @@
 #include <utility>
 #include <cmath>
 
+namespace game {
+
 const CircleCollision CircleCollision::none;
 
 CircleCollision::CircleCollision()
@@ -22,14 +24,14 @@ CircleCollision circleCollidesLine(
     const Vector& direction,
     const Line& line)
 {
-    Scalar d = distance(circle.center(), line);
+    Coord d = distance(circle.center(), line);
     Line circleMoveLine = Line::directed(circle.center(), direction);
 
     Point x = lineCross(circleMoveLine, line);
-    Scalar distanceToCross = len(x - circle.center());
+    Coord distanceToCross = len(x - circle.center());
 
-    Scalar coeff = len(x - circle.center()) / d;
-    Scalar offset = circle.radius() * coeff;
+    Coord coeff = len(x - circle.center()) / d;
+    Coord offset = circle.radius() * coeff;
 
     Point newCenter = circle.center() +
         normalized(direction) * (distanceToCross - offset);
@@ -44,18 +46,18 @@ CircleCollision circleCollidesPoint(
     const Point& point)
 {
     Line movementLine = Line::directed(circle.center(), direction);
-    Scalar c = pointCoordOnLine(point, movementLine);
+    Coord c = pointCoordOnLine(point, movementLine);
     if (c < 0) {
         return CircleCollision::none;
     }
 
     Point proj = linePointAtCoord(movementLine, c);
-    Scalar dist = len(proj - point);
+    Coord dist = len(proj - point);
     if (dist > circle.radius()) {
         return CircleCollision::none;
     }
 
-    Scalar offset = std::sqrt(circle.radius() * circle.radius() - dist * dist);
+    Coord offset = std::sqrt(circle.radius() * circle.radius() - dist * dist);
     Point newCenter = proj - normalized(direction) * offset;
 
     return CircleCollision(newCenter, point);
@@ -78,14 +80,15 @@ CircleCollision circleCollidesSegment(
     CircleCollision lineCollision = circleCollidesLine(
         circle, direction, segmentLine);
 
-    Scalar collisionCoord =
+    Coord collisionCoord =
         pointCoordOnLine(lineCollision.collisionPoint, segmentLine);
     if (collisionCoord >= 0 && collisionCoord <= 1) {
         return lineCollision;
     }
 
-    Scalar fixedCoord = clamp(collisionCoord, 0, 1);
+    Coord fixedCoord = clamp<Coord>(collisionCoord, 0, 1);
     return circleCollidesPoint(
         circle, direction, linePointAtCoord(segmentLine, fixedCoord));
 }
 
+} // namespace game

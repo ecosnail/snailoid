@@ -178,12 +178,11 @@ copy "$(ProjectDir)snailoid.cfg" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="2dspace.cpp" />
     <ClCompile Include="collisions.cpp" />
     <ClCompile Include="game_state.cpp" />
-    <ClCompile Include="geometry.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="media.cpp" />
+    <ClCompile Include="timer.cpp" />
     <ClCompile Include="view.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -191,7 +190,9 @@ copy "$(ProjectDir)snailoid.cfg" "$(OutDir)"</Command>
     <ClInclude Include="collisions.hpp" />
     <ClInclude Include="configuration.hpp" />
     <ClInclude Include="exceptions.hpp" />
-    <ClInclude Include="frame_timer.hpp" />
+    <ClInclude Include="game_space.hpp" />
+    <ClInclude Include="screen_space.hpp" />
+    <ClInclude Include="timer.hpp" />
     <ClInclude Include="game_objects.hpp" />
     <ClInclude Include="game_state.hpp" />
     <ClInclude Include="geometry.hpp" />

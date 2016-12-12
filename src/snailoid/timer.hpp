@@ -2,12 +2,27 @@
 
 #include <chrono>
 
+class Timer {
+public:
+    Timer();
+
+    double get() const;
+    double reset();
+
+private:
+    typedef std::chrono::high_resolution_clock Clock;
+
+    std::chrono::time_point<Clock> _start;
+};
+
 class FrameTimer {
 public:
     FrameTimer(float fps)
         : _timePerFrame(1.0f / fps)
         , _prevTime(Clock::now())
     { }
+
+    float timePerFrame() const { return _timePerFrame.count(); }
 
     bool itIsTime()
     {

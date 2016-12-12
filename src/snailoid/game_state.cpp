@@ -1,20 +1,30 @@
 #include "game_state.hpp"
 #include "collisions.hpp"
 
-void GameState::update(float deltaSec)
+namespace game {
+
+State::State()
+    : ball()
+    , blocks()
+{
+    blocks.emplace_back(0.1f, 0.8f, 0.1f, 0.05f);
+}
+
+void State::update(float deltaSec)
 {
     //if (_ballIsAttached) {
     //    return;
     //}
 
-    Scalar minDistance = 1000000; // TODO: Support infinity in 2D space
+    
+    game::Coord minDistance = 1000000; // TODO: Support infinity in 2D space
     CircleCollision closestCollision = CircleCollision::none;
-    for (const Block& block : _blocks) {
+    for (const Block& block : blocks) {
         CircleCollision collision = circleCollidesPolygon(
-            _ball.geometry, _ball.velocity, block.geometry);
+            ball.geometry, ball.velocity, block.geometry);
         if (collision.happened) {
-            Scalar newDistance =
-                distance(_ball.geometry.center(), collision.circleCenter);
+            game::Coord newDistance =
+                distance(ball.geometry.center(), collision.circleCenter);
             if (newDistance < minDistance) {
                 minDistance = newDistance;
                 closestCollision = collision;
@@ -23,24 +33,23 @@ void GameState::update(float deltaSec)
     }
 
     if (closestCollision.happened) {
-        float timeToCollision = minDistance / len(_ball.velocity);
+        float timeToCollision = minDistance / len(ball.velocity);
         if (timeToCollision <= deltaSec) {
-            _ball.velocity = mirrorAlong(
-                _ball.velocity,
+            ball.velocity = mirrorAlong(
+                ball.velocity,
                 closestCollision.collisionPoint -
                     closestCollision.circleCenter);
-            _ball.geometry = Circle(
+            ball.geometry = Circle(
                 closestCollision.circleCenter,
-                _ball.geometry.radius());
+                ball.geometry.radius());
         }
     } else {
-        _ball.geometry = Circle(
-            _ball.geometry.center() + _ball.velocity * deltaSec,
-            _ball.geometry.radius());
+        ball.geometry = Circle(
+            ball.geometry.center() + ball.velocity * deltaSec,
+            ball.geometry.radius());
     }
 
 
-
-
-
 }
+
+} // namespace game

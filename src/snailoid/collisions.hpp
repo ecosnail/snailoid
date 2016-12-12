@@ -1,7 +1,8 @@
 #pragma once
 
-#include "geometry.hpp"
+#include "game_space.hpp"
 
+namespace game {
 
 class CircleCollision {
 public:
@@ -39,11 +40,11 @@ CircleCollision circleCollidesPolygon(
     const P& polygon)
 {
     CircleCollision closestCollision = CircleCollision::none;
-    Scalar closestDistance = std::numeric_limits<float>::infinity();
+    Coord closestDistance = std::numeric_limits<float>::infinity();
     for (const Segment& s : polygon.segments()) {
         CircleCollision collision = circleCollidesSegment(circle, direction, s);
         if (collision.happened) {
-            Scalar dist = distance(circle.center(), collision.circleCenter);
+            Coord dist = distance(circle.center(), collision.circleCenter);
             if (dist < closestDistance) {
                 closestDistance = dist;
                 closestCollision = collision;
@@ -53,3 +54,5 @@ CircleCollision circleCollidesPolygon(
 
     return closestCollision;
 }
+
+} // namespace game

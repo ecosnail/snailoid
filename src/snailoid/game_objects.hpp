@@ -1,8 +1,10 @@
 #pragma once
 
-#include "geometry.hpp"
+#include "game_space.hpp"
 
 #include <utility>
+
+namespace game {
 
 struct Block {
     Block(float x, float y, float w, float h)
@@ -51,3 +53,5 @@ struct Ball {
     Circle geometry;
     Vector velocity;
 };
+
+} // namespace game
